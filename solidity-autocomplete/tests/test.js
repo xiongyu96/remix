@@ -11,7 +11,7 @@ describe('AutocompleteTests', function() {
             done()
         })
         it('should have 1 suggestion', function() {
-            assert.equal(results.length, 1)
+            assert.equal(results.length, 3)
         })
     })
   return true

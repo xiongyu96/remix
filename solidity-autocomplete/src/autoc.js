@@ -27,6 +27,7 @@ class AutoC {
       outputSelection
     }
     let sources = {}
+    let resultNodes = []
     sources[this.filename] = { 'content': this.fileContent }
     const input = { language: 'Solidity', sources, settings }
     const output = JSON.parse(Solc.compileStandardWrapper(JSON.stringify(input)))
@@ -35,17 +36,17 @@ class AutoC {
     astq.adapter({
       taste: function (node) {
         console.log('Taste')
-        console.log(node)
+        // console.log(JSON.stringify(node))
         return (typeof node === 'object' && typeof node.nodeType === 'string' && node !== null && node.nodeType === 'SourceUnit')
       },
       getParentNode: function (node, type) {
         console.log('Need parent')
-        console.log(node)
+        // console.log(JSON.stringify(node))
         return node.parent()
       },
       getChildNodes: function (node) {
         console.log('Getting children')
-        console.log(node.nodes)
+        // console.log(JSON.stringify(node.nodes))
         return node.nodes ? node.nodes : []
       },
       getNodeType: function (node) { return node.nodeType },
@@ -55,15 +56,12 @@ class AutoC {
       },
       getNodeAttrValue: function (node, attr) { return node.get(attr) }
     })
-    astq.query(ast, `
-      // VariableDeclarator [
-           /:id   Identifier [ @name  ]
-        && /:init Literal    [ @value ]
-    ]`).forEach(function (node) {
+    astq.query(ast, `./ * [ /:id * [ * ] ]`).forEach(function (node) {
       console.log('ASTquery result')
-      console.log(`${node.id.name}: ${node.init.value}`)
+      console.log(node)
+      resultNodes.push(node)
     })
-    return []
+    return resultNodes
   }
 }
 
