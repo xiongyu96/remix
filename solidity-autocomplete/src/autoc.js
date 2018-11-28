@@ -12,12 +12,12 @@ class AutoC {
       return data
     })
   }
-  suggest (w) {
+  suggest (queryStr) {
     // Prepare to get AST
     const outputSelection = {
       // Enable the metadata and bytecode outputs of every single contract.
       '*': {
-        '': ['ast', 'legacyAST'],
+        '': ['ast'],
         '*': []
       }
     }
@@ -27,40 +27,39 @@ class AutoC {
       outputSelection
     }
     let sources = {}
+    let output = {}
     let resultNodes = []
     sources[this.filename] = { 'content': this.fileContent }
     const input = { language: 'Solidity', sources, settings }
-    const output = JSON.parse(Solc.compileStandardWrapper(JSON.stringify(input)))
-    const ast = output.sources[this.filename].ast
-    const astq = new ASTQ()
-    astq.adapter({
-      taste: function (node) {
-        console.log('Taste')
-        // console.log(JSON.stringify(node))
-        return (typeof node === 'object' && typeof node.nodeType === 'string' && node !== null && node.nodeType === 'SourceUnit')
-      },
-      getParentNode: function (node, type) {
-        console.log('Need parent')
-        // console.log(JSON.stringify(node))
-        return node.parent()
-      },
-      getChildNodes: function (node) {
-        console.log('Getting children')
-        // console.log(JSON.stringify(node.nodes))
-        return node.nodes ? node.nodes : []
-      },
-      getNodeType: function (node) { return node.nodeType },
-      getNodeAttrNames: function (node) {
-        console.log('Node attr')
-        return node.attrs()
-      },
-      getNodeAttrValue: function (node, attr) { return node.get(attr) }
-    })
-    astq.query(ast, `./ * [ /:id * [ * ] ]`).forEach(function (node) {
-      console.log('ASTquery result')
-      console.log(node)
-      resultNodes.push(node)
-    })
+    try {
+      output = JSON.parse(Solc.compile(JSON.stringify(input)))
+    } catch (e) {
+      throw e
+    } finally {
+      const ast = output.sources[this.filename].ast
+      const astq = new ASTQ()
+      astq.adapter({
+        taste: function (node) {
+          return (typeof node === 'object' && typeof node.nodeType === 'string' && node !== null && node.nodeType === 'SourceUnit')
+        },
+        getParentNode: function (node, type) {
+          return node.parent()
+        },
+        getChildNodes: function (node) {
+          return node.nodes ? node.nodes : []
+        },
+        getNodeType: function (node) { return node.nodeType },
+        getNodeAttrNames: function (node) {
+          return node.attrs()
+        },
+        getNodeAttrValue: function (node, attr) {
+          return node[attr]
+        }
+      })
+      astq.query(ast, queryStr).forEach(function (node) {
+        resultNodes.push(node)
+      })
+    }
     return resultNodes
   }
 }
