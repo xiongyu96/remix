@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "astq": "^2.3.6",
-    "solc": "^0.4.25"
+    "solc": "^0.5.0"
   },
   "devDependencies": {
     "mocha": "^5.2.0",

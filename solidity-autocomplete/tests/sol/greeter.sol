@@ -1,8 +1,8 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.0;
 
 contract Mortal {
     /* Define variable owner of the type address */
-    address owner;
+    address payable owner;
 
     /* This function is executed at initialization and sets the owner of the contract */
     function mortal() public { owner = msg.sender; }
@@ -17,12 +17,12 @@ contract Greeter is Mortal {
     string greeting;
 
     /* This runs when the contract is executed */
-    function Greeter(string _greeting) public {
+    constructor(string memory _greeting) public {
         greeting = _greeting;
     }
 
     /* Main function */
-    function greet() public constant returns (string) {
+    function greet() public view returns (string memory) {
         return greeting;
     }
 }
