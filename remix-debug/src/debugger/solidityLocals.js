@@ -1,6 +1,5 @@
 var remixLib = require('remix-lib')
 var EventManager = remixLib.EventManager
-
 var localDecoder = require('../solidity-decoder/localDecoder')
 var StorageViewer = require('../storage/storageViewer')
 
