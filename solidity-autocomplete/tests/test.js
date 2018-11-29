@@ -2,7 +2,7 @@ const assert = require('assert')
 const AutoC = require('../src/autoc.js')
 
 describe('AutocompleteTests', function() {
-    describe('#runFileTest', function() {
+    describe('find all ContractDefinition(s)', function() {
         const filename = 'tests/sol/greeter.sol';
         let tests = [], results = [];
 
