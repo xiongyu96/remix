@@ -120,12 +120,12 @@ class TxRunner {
     if (!useCall) {
       ++self.blockNumber
     } else {
-      executionContext.vm().stateManager.checkpoint()
+      executionContext.stateManager().checkpoint(() => {})
     }
 
     executionContext.vm().runTx({block: block, tx: tx, skipBalance: true, skipNonce: true}, function (err, result) {
       if (useCall) {
-        executionContext.vm().stateManager.revert(function () {})
+        executionContext.stateManager().revert(() => {})
       }
       err = err ? err.message : err
       if (result) {
