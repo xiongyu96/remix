@@ -5,7 +5,7 @@ var ethJSUtil = require('ethereumjs-util')
 var EventManager = require('../eventManager')
 var codeUtil = require('../util')
 
-var executionContext = require('./execution-context')
+var executionContext = require('./execution-context/execution-context')
 var txFormat = require('./txFormat')
 var txHelper = require('./txHelper')
 
@@ -39,7 +39,7 @@ class TxListener {
       // in VM mode
       // in web3 mode && listen remix txs only
       if (!this._isListening) return // we don't listen
-      if (this._loopId && executionContext.getProvider() !== 'vm') return // we seems to already listen on a "web3" network
+      if (this._loopId && !executionContext.isVM()) return // we seems to already listen on a "web3" network
 
       var call = {
         from: from,
@@ -66,7 +66,7 @@ class TxListener {
       // in VM mode
       // in web3 mode && listen remix txs only
       if (!this._isListening) return // we don't listen
-      if (this._loopId && executionContext.getProvider() !== 'vm') return // we seems to already listen on a "web3" network
+      if (this._loopId && !executionContext.isVM()) return // we seems to already listen on a "web3" network
       executionContext.web3().eth.getTransaction(txResult.transactionHash, (error, tx) => {
         if (error) return console.log(error)
 
@@ -121,7 +121,7 @@ class TxListener {
   startListening () {
     this.init()
     this._isListening = true
-    if (this._listenOnNetwork && executionContext.getProvider() !== 'vm') {
+    if (this._listenOnNetwork && !executionContext.isVM()) {
       this._startListenOnNetwork()
     }
   }

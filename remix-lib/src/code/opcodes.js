@@ -1,5 +1,5 @@
 'use strict'
-var codes = {
+const codes = {
   // 0x0 range - arithmetic ops
   // name, baseCost, off stack, on stack, dynamic, async
   0x00: ['STOP', 0, 0, 0, false],
@@ -27,6 +27,9 @@ var codes = {
   0x18: ['XOR', 3, 2, 1, false],
   0x19: ['NOT', 3, 1, 1, false],
   0x1a: ['BYTE', 3, 2, 1, false],
+  0x1b: ['SHL', 3, 2, 1, false],
+  0x1c: ['SHR', 3, 2, 1, false],
+  0x1d: ['SAR', 3, 2, 1, false],
 
   // 0x20 range - crypto
   0x20: ['SHA3', 30, 2, 1, false],
@@ -47,6 +50,7 @@ var codes = {
   0x3c: ['EXTCODECOPY', 700, 4, 0, true, true],
   0x3d: ['RETURNDATASIZE', 2, 0, 1, true],
   0x3e: ['RETURNDATACOPY', 3, 3, 0, true],
+  0x3f: ['EXTCODEHASH', 400, 1, 1, true, true],
 
   // '0x40' range - block operations
   0x40: ['BLOCKHASH', 20, 1, 1, true, true],
@@ -71,78 +75,78 @@ var codes = {
   0x5b: ['JUMPDEST', 1, 0, 0, false],
 
   // 0x60, range
-  0x60: ['PUSH1', 3, 0, 1, false],
-  0x61: ['PUSH2', 3, 0, 1, false],
-  0x62: ['PUSH3', 3, 0, 1, false],
-  0x63: ['PUSH4', 3, 0, 1, false],
-  0x64: ['PUSH5', 3, 0, 1, false],
-  0x65: ['PUSH6', 3, 0, 1, false],
-  0x66: ['PUSH7', 3, 0, 1, false],
-  0x67: ['PUSH8', 3, 0, 1, false],
-  0x68: ['PUSH9', 3, 0, 1, false],
-  0x69: ['PUSH10', 3, 0, 1, false],
-  0x6a: ['PUSH11', 3, 0, 1, false],
-  0x6b: ['PUSH12', 3, 0, 1, false],
-  0x6c: ['PUSH13', 3, 0, 1, false],
-  0x6d: ['PUSH14', 3, 0, 1, false],
-  0x6e: ['PUSH15', 3, 0, 1, false],
-  0x6f: ['PUSH16', 3, 0, 1, false],
-  0x70: ['PUSH17', 3, 0, 1, false],
-  0x71: ['PUSH18', 3, 0, 1, false],
-  0x72: ['PUSH19', 3, 0, 1, false],
-  0x73: ['PUSH20', 3, 0, 1, false],
-  0x74: ['PUSH21', 3, 0, 1, false],
-  0x75: ['PUSH22', 3, 0, 1, false],
-  0x76: ['PUSH23', 3, 0, 1, false],
-  0x77: ['PUSH24', 3, 0, 1, false],
-  0x78: ['PUSH25', 3, 0, 1, false],
-  0x79: ['PUSH26', 3, 0, 1, false],
-  0x7a: ['PUSH27', 3, 0, 1, false],
-  0x7b: ['PUSH28', 3, 0, 1, false],
-  0x7c: ['PUSH29', 3, 0, 1, false],
-  0x7d: ['PUSH30', 3, 0, 1, false],
-  0x7e: ['PUSH31', 3, 0, 1, false],
-  0x7f: ['PUSH32', 3, 0, 1, false],
+  0x60: ['PUSH', 3, 0, 1, false],
+  0x61: ['PUSH', 3, 0, 1, false],
+  0x62: ['PUSH', 3, 0, 1, false],
+  0x63: ['PUSH', 3, 0, 1, false],
+  0x64: ['PUSH', 3, 0, 1, false],
+  0x65: ['PUSH', 3, 0, 1, false],
+  0x66: ['PUSH', 3, 0, 1, false],
+  0x67: ['PUSH', 3, 0, 1, false],
+  0x68: ['PUSH', 3, 0, 1, false],
+  0x69: ['PUSH', 3, 0, 1, false],
+  0x6a: ['PUSH', 3, 0, 1, false],
+  0x6b: ['PUSH', 3, 0, 1, false],
+  0x6c: ['PUSH', 3, 0, 1, false],
+  0x6d: ['PUSH', 3, 0, 1, false],
+  0x6e: ['PUSH', 3, 0, 1, false],
+  0x6f: ['PUSH', 3, 0, 1, false],
+  0x70: ['PUSH', 3, 0, 1, false],
+  0x71: ['PUSH', 3, 0, 1, false],
+  0x72: ['PUSH', 3, 0, 1, false],
+  0x73: ['PUSH', 3, 0, 1, false],
+  0x74: ['PUSH', 3, 0, 1, false],
+  0x75: ['PUSH', 3, 0, 1, false],
+  0x76: ['PUSH', 3, 0, 1, false],
+  0x77: ['PUSH', 3, 0, 1, false],
+  0x78: ['PUSH', 3, 0, 1, false],
+  0x79: ['PUSH', 3, 0, 1, false],
+  0x7a: ['PUSH', 3, 0, 1, false],
+  0x7b: ['PUSH', 3, 0, 1, false],
+  0x7c: ['PUSH', 3, 0, 1, false],
+  0x7d: ['PUSH', 3, 0, 1, false],
+  0x7e: ['PUSH', 3, 0, 1, false],
+  0x7f: ['PUSH', 3, 0, 1, false],
 
-  0x80: ['DUP1', 3, 0, 1, false],
-  0x81: ['DUP2', 3, 0, 1, false],
-  0x82: ['DUP3', 3, 0, 1, false],
-  0x83: ['DUP4', 3, 0, 1, false],
-  0x84: ['DUP5', 3, 0, 1, false],
-  0x85: ['DUP6', 3, 0, 1, false],
-  0x86: ['DUP7', 3, 0, 1, false],
-  0x87: ['DUP8', 3, 0, 1, false],
-  0x88: ['DUP9', 3, 0, 1, false],
-  0x89: ['DUP10', 3, 0, 1, false],
-  0x8a: ['DUP11', 3, 0, 1, false],
-  0x8b: ['DUP12', 3, 0, 1, false],
-  0x8c: ['DUP13', 3, 0, 1, false],
-  0x8d: ['DUP14', 3, 0, 1, false],
-  0x8e: ['DUP15', 3, 0, 1, false],
-  0x8f: ['DUP16', 3, 0, 1, false],
+  0x80: ['DUP', 3, 0, 1, false],
+  0x81: ['DUP', 3, 0, 1, false],
+  0x82: ['DUP', 3, 0, 1, false],
+  0x83: ['DUP', 3, 0, 1, false],
+  0x84: ['DUP', 3, 0, 1, false],
+  0x85: ['DUP', 3, 0, 1, false],
+  0x86: ['DUP', 3, 0, 1, false],
+  0x87: ['DUP', 3, 0, 1, false],
+  0x88: ['DUP', 3, 0, 1, false],
+  0x89: ['DUP', 3, 0, 1, false],
+  0x8a: ['DUP', 3, 0, 1, false],
+  0x8b: ['DUP', 3, 0, 1, false],
+  0x8c: ['DUP', 3, 0, 1, false],
+  0x8d: ['DUP', 3, 0, 1, false],
+  0x8e: ['DUP', 3, 0, 1, false],
+  0x8f: ['DUP', 3, 0, 1, false],
 
-  0x90: ['SWAP1', 3, 0, 0, false],
-  0x91: ['SWAP2', 3, 0, 0, false],
-  0x92: ['SWAP3', 3, 0, 0, false],
-  0x93: ['SWAP4', 3, 0, 0, false],
-  0x94: ['SWAP5', 3, 0, 0, false],
-  0x95: ['SWAP6', 3, 0, 0, false],
-  0x96: ['SWAP7', 3, 0, 0, false],
-  0x97: ['SWAP8', 3, 0, 0, false],
-  0x98: ['SWAP9', 3, 0, 0, false],
-  0x99: ['SWAP10', 3, 0, 0, false],
-  0x9a: ['SWAP11', 3, 0, 0, false],
-  0x9b: ['SWAP12', 3, 0, 0, false],
-  0x9c: ['SWAP13', 3, 0, 0, false],
-  0x9d: ['SWAP14', 3, 0, 0, false],
-  0x9e: ['SWAP15', 3, 0, 0, false],
-  0x9f: ['SWAP16', 3, 0, 0, false],
+  0x90: ['SWAP', 3, 0, 0, false],
+  0x91: ['SWAP', 3, 0, 0, false],
+  0x92: ['SWAP', 3, 0, 0, false],
+  0x93: ['SWAP', 3, 0, 0, false],
+  0x94: ['SWAP', 3, 0, 0, false],
+  0x95: ['SWAP', 3, 0, 0, false],
+  0x96: ['SWAP', 3, 0, 0, false],
+  0x97: ['SWAP', 3, 0, 0, false],
+  0x98: ['SWAP', 3, 0, 0, false],
+  0x99: ['SWAP', 3, 0, 0, false],
+  0x9a: ['SWAP', 3, 0, 0, false],
+  0x9b: ['SWAP', 3, 0, 0, false],
+  0x9c: ['SWAP', 3, 0, 0, false],
+  0x9d: ['SWAP', 3, 0, 0, false],
+  0x9e: ['SWAP', 3, 0, 0, false],
+  0x9f: ['SWAP', 3, 0, 0, false],
 
-  0xa0: ['LOG0', 375, 2, 0, false],
-  0xa1: ['LOG1', 375, 3, 0, false],
-  0xa2: ['LOG2', 375, 4, 0, false],
-  0xa3: ['LOG3', 375, 5, 0, false],
-  0xa4: ['LOG4', 375, 6, 0, false],
+  0xa0: ['LOG', 375, 2, 0, false],
+  0xa1: ['LOG', 375, 3, 0, false],
+  0xa2: ['LOG', 375, 4, 0, false],
+  0xa3: ['LOG', 375, 5, 0, false],
+  0xa4: ['LOG', 375, 6, 0, false],
 
   // '0xf0' range - closures
   0xf0: ['CREATE', 32000, 3, 1, true, true],
@@ -150,6 +154,7 @@ var codes = {
   0xf2: ['CALLCODE', 700, 7, 1, true, true],
   0xf3: ['RETURN', 0, 2, 0, false],
   0xf4: ['DELEGATECALL', 700, 6, 1, true, true],
+  0xf5: ['CREATE2', 32000, 4, 1, true, true],
   0xfa: ['STATICCALL', 700, 6, 1, true, true],
   0xfd: ['REVERT', 0, 2, 0, false],
 
@@ -158,7 +163,7 @@ var codes = {
   0xff: ['SELFDESTRUCT', 5000, 1, 0, false, true]
 }
 
-module.exports = function (op, full) {
+module.exports = function (op, full, freeLogs) {
   var code = codes[op] ? codes[op] : ['INVALID', 0, 0, 0, false, false]
   var opcode = code[0]
 
@@ -180,5 +185,13 @@ module.exports = function (op, full) {
     }
   }
 
-  return {name: opcode, fee: code[1], in: code[2], out: code[3], dynamic: code[4], async: code[5]}
+  var fee = code[1]
+
+  if (freeLogs) {
+    if (opcode === 'LOG') {
+      fee = 0
+    }
+  }
+
+  return {name: opcode, opcode: op, fee: fee, in: code[2], out: code[3], dynamic: code[4], async: code[5]}
 }

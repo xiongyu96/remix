@@ -36,7 +36,7 @@ function testWithInput (st, params, expected) {
 /* tape *********************************************************** */
 
 tape('ContractParameters - (TxFormat.buildData) - link Libraries', function (t) {
-  executionContext.setContext('vm')
+  executionContext.setContext('vm-constantinople')
   var compileData = compiler.compile(compilerInput(deploySimpleLib))
 
   var fakeDeployedContracts = {
