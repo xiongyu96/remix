@@ -1,34 +1,34 @@
 // Autocomplete library for solidity
 
-const fs = require('fs')
-const Solc = require('solc')
-const ASTQ = require('astq')
+import * as fs from 'fs'
+import * as Solc from 'solc'
+import * as ASTQ from 'astq'
 
-class AutoC {
-  constructor (fn) {
+export class AutoC {
+  private filename: string
+  private fileContent: string
+  constructor(fn: string) {
     this.filename = fn
-    this.fileContent = fs.readFileSync(this.filename, 'utf8', (err, data) => {
-      if (err) throw err
-      return data
-    })
+    this.fileContent = fs.readFileSync(this.filename, 'utf8')
   }
-  suggest (queryStr) {
+
+  suggest(queryStr: string) {
     // Prepare to get AST
-    const outputSelection = {
+    const outputSelection: object = {
       // Enable the metadata and bytecode outputs of every single contract.
       '*': {
         '': ['ast'],
         '*': []
       }
     }
-    const settings = {
+    const settings: object = {
       optimizer: { enabled: true, runs: 500 },
       evmVersion: 'byzantium',
       outputSelection
     }
     let sources = {}
-    let output = {}
-    let resultNodes = []
+    let output: any = {}
+    let resultNodes: Array<any> = []
     sources[this.filename] = { 'content': this.fileContent }
     const input = { language: 'Solidity', sources, settings }
     try {
@@ -39,29 +39,27 @@ class AutoC {
       const ast = output.sources[this.filename].ast
       const astq = new ASTQ()
       astq.adapter({
-        taste: function (node) {
+        taste: (node: any) => {
           return (typeof node === 'object' && typeof node.nodeType === 'string' && node !== null && node.nodeType === 'SourceUnit')
         },
-        getParentNode: function (node, type) {
+        getParentNode: (node: any, type: string) => {
           return node.parent()
         },
-        getChildNodes: function (node) {
+        getChildNodes: (node: any) => {
           return node.nodes ? node.nodes : []
         },
-        getNodeType: function (node) { return node.nodeType },
-        getNodeAttrNames: function (node) {
+        getNodeType: (node: any) => { return node.nodeType },
+        getNodeAttrNames: (node: any) => {
           return node.attrs()
         },
-        getNodeAttrValue: function (node, attr) {
+        getNodeAttrValue: (node: any, attr: any) => {
           return node[attr]
         }
       })
-      astq.query(ast, queryStr).forEach(function (node) {
+      astq.query(ast, queryStr).forEach((node: any) => {
         resultNodes.push(node)
       })
     }
     return resultNodes
   }
 }
-
-module.exports = AutoC
