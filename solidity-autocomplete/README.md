@@ -1,7 +1,7 @@
 ## Solidity autocomplete
 
 ```javascript
-const suggestions = AutoC(filename).suggest(`//ast query`);
+const suggestions = AutoC(filename, sources).suggest(`//ast query`);
 ```
 
 ### ASTQ query examples

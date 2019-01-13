@@ -2,7 +2,7 @@
   "name": "solidity-autocomplete",
   "version": "0.0.1",
   "description": "Language autocomplete for Solidity",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
     "test": "mocha --require ts-node/register tests/*.ts -t 300000"

@@ -1,15 +1,14 @@
 // Autocomplete library for solidity
-
-import * as fs from 'fs'
 import * as Solc from 'solc'
 import * as ASTQ from 'astq'
 
 export class AutoC {
+  private sources: Object
   private filename: string
-  private fileContent: string
-  constructor(fn: string) {
+  // TODO: remove file read dependency
+  constructor(fn: string, sources: Object) {
     this.filename = fn
-    this.fileContent = fs.readFileSync(this.filename, 'utf8')
+    this.sources = sources
   }
 
   suggest(queryStr: string) {
@@ -26,11 +25,9 @@ export class AutoC {
       evmVersion: 'byzantium',
       outputSelection
     }
-    let sources = {}
     let output: any = {}
     let resultNodes: Array<any> = []
-    sources[this.filename] = { 'content': this.fileContent }
-    const input = { language: 'Solidity', sources, settings }
+    const input = { language: 'Solidity', sources: this.sources, settings }
     try {
       output = JSON.parse(Solc.compile(JSON.stringify(input)))
     } catch (e) {
