@@ -2,6 +2,7 @@
 var fs = require('fs')
 const path = require('path')
 
+
 // https://github.com/mikeal/node-utils/blob/master/file/lib/main.js
 fs.walkSync = function (start, callback) {
   fs.readdirSync(start).forEach(name => {
