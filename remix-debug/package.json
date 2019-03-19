@@ -19,7 +19,7 @@
   "main": "./index.js",
   "dependencies": {
     "commander": "^2.19.0",
-    "ethereumjs-util": "^4.5.0",
+    "ethereumjs-util": "4.5.0",
     "ethereumjs-vm": "2.4.0",
     "fast-async": "^6.1.2",
     "remix-lib": "0.4.1"
@@ -32,7 +32,7 @@
     "notify-error": "^1.2.0",
     "standard": "^7.0.1",
     "standard-reporter": "^1.0.5",
-    "solc": "^0.5.0",
+    "solc": "0.5.0",
     "tape": "^4.6.0"
   },
   "scripts": {
