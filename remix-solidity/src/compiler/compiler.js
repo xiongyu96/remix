@@ -23,7 +23,7 @@ function Compiler (handleImportCall) {
 
   var worker = null
 
-  var currentVersion
+  var currentVersion = '0.4.24-develop.2018.10.12+commit.6eda1fa6.Emscripten.clang'
 
   var optimize = false
 
@@ -66,8 +66,8 @@ function Compiler (handleImportCall) {
   this.setCompileJSON = setCompileJSON // this is exposed for testing
 
   function onCompilerLoaded (version) {
-    currentVersion = version
-    self.event.trigger('compilerLoaded', [version])
+    //currentVersion = version
+    self.event.trigger('compilerLoaded', [currentVersion])
   }
 
   function onInternalCompilerLoaded () {
@@ -98,7 +98,8 @@ function Compiler (handleImportCall) {
 
         compilationFinished(result, missingInputs, source)
       }
-      onCompilerLoaded(compiler.version())
+      onCompilerLoaded(currentVersion)
+      //onCompilerLoaded(compiler.version())
     }
   }
   // exposed for use in node

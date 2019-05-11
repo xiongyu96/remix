@@ -68,8 +68,11 @@ module.exports = {
 }
 
 var web3DebugNodes = {
+  /*
   'Main': 'https://mainnet.infura.io/remix',
   'Rinkeby': 'http://52.56.126.137:8545',
   'Ropsten': 'http://35.178.125.92:8545',
   'Kovan': 'http://35.176.227.86:8545'
+  */
+  'Cerebro': 'http://cerebro.waterhole.xyz:8080'
 }
