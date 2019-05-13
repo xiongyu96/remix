@@ -76,8 +76,12 @@ var vms = {
   byzantium: createVm('byzantium'),
   constantinople: createVm('constantinople')
 }
-
+/*
+ * ethereum genesis block hash
 var mainNetGenesisHash = '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3'
+*/
+
+var mainNetGenesisHash = '0x1875c8fde48d2f71e82708489390ec29385749701a41459622c70565bbc37ccb'
 
 /*
   trigger contextChanged, web3EndpointChanged
@@ -100,7 +104,7 @@ function ExecutionContext () {
       if (executionContext === 'injected') this.askPermission()
     }
   }
-
+  //whereis global ethereum
   this.askPermission = function () {
     // metamask
     if (ethereum && typeof ethereum.enable === 'function') ethereum.enable()
@@ -125,6 +129,11 @@ function ExecutionContext () {
       this.web3().version.getNetwork((err, id) => {
         var name = null
         if (err) name = 'Unknown'
+        else if (id === '1') name = 'Cerebro'
+        else name = 'Custom'
+
+        /*
+         * etherem network
         // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md
         else if (id === '1') name = 'Main'
         else if (id === '2') name = 'Morden (deprecated)'
@@ -133,6 +142,7 @@ function ExecutionContext () {
         else if (id === '5') name = 'Görli'
         else if (id === '42') name = 'Kovan'
         else name = 'Custom'
+        */
 
         if (id === '1') {
           this.web3().eth.getBlock(0, (error, block) => {
@@ -193,7 +203,7 @@ function ExecutionContext () {
     if (context === 'injected') {
       if (injectedProvider === undefined) {
         var alertMsg = 'No injected Web3 provider found. '
-        alertMsg += 'Make sure your provider (e.g. MetaMask) is active and running '
+        alertMsg += 'Make sure your provider (e.g. CortexWallet) is active and running '
         alertMsg += '(when recently activated you may have to reload the page).'
         infoCb(alertMsg)
         return cb()
@@ -277,6 +287,7 @@ function ExecutionContext () {
 }
 
 var transactionDetailsLinks = {
+  'Cerebro': 'https://cerebro.cortexlabs.ai/tx/',
   'Main': 'https://www.etherscan.io/tx/',
   'Rinkeby': 'https://rinkeby.etherscan.io/tx/',
   'Ropsten': 'https://ropsten.etherscan.io/tx/',
