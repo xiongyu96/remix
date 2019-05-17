@@ -164,7 +164,7 @@ UniversalDApp.prototype.getBalanceInEther = function (address, callback) {
     if (error) {
       callback(error)
     } else {
-      callback(null, executionContext.web3().fromWei(balance, 'ether'))
+      callback(null, executionContext.web3().fromTuring(balance, 'cortex'))
     }
   })
 }

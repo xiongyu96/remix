@@ -36,8 +36,8 @@ function web3VmProvider () {
   this.toAscii = function () { return self.web3.toAscii.apply(self.web3, arguments) }
   this.fromAscii = function () { return self.web3.fromAscii.apply(self.web3, arguments) }
   this.fromDecimal = function () { return self.web3.fromDecimal.apply(self.web3, arguments) }
-  this.fromWei = function () { return self.web3.fromWei.apply(self.web3, arguments) }
-  this.toWei = function () { return self.web3.toWei.apply(self.web3, arguments) }
+  this.fromTuring = function () { return self.web3.fromTuring.apply(self.web3, arguments) }
+  this.toTuring = function () { return self.web3.toTuring.apply(self.web3, arguments) }
   this.toBigNumber = function () { return self.web3.toBigNumber.apply(self.web3, arguments) }
   this.isAddress = function () { return self.web3.isAddress.apply(self.web3, arguments) }
 }
